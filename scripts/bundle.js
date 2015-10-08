@@ -31720,10 +31720,25 @@ module.exports = React.createClass({
 
 	render: function render() {
 		return React.createElement(
-			"div",
-			null,
-			"im a login component"
+			"form",
+			{ onSubmit: this.loginUser },
+			React.createElement(
+				"h1",
+				null,
+				"Login"
+			),
+			React.createElement("input", { type: "text", ref: "username", placeholder: "Username or Email" }),
+			React.createElement("input", { type: "text", ref: "email", placeholder: "Email" }),
+			React.createElement("input", { type: "password", ref: "password", placeholder: "Password" }),
+			React.createElement(
+				"button",
+				null,
+				"LOGIN"
+			)
 		);
+	},
+	loginUser: function loginUser(e) {
+		e.preventDefault();
 	}
 });
 
@@ -31735,11 +31750,55 @@ var React = require("react");
 module.exports = React.createClass({
 	displayName: "exports",
 
+	componentWillMount: function componentWillMount() {
+		var that = this;
+		this.props.router.on("route", function () {
+			that.forceUpdate();
+		});
+	},
 	render: function render() {
+		var links = [];
+		if (this.props.history.getFragment() === "register") {
+			links.push(React.createElement(
+				"li",
+				{ key: "login-link" },
+				React.createElement(
+					"a",
+					{ href: "#login" },
+					"Login"
+				)
+			));
+		} else {
+			links.push(React.createElement(
+				"li",
+				{ key: "register-link" },
+				React.createElement(
+					"a",
+					{ href: "#register" },
+					"Register"
+				)
+			));
+		}
+		// links.push(<li key="login-link"><a href="#profile/1">Profile</a></li>);
+		// links.push(<li key="login-link"><a href="#editprofile">Edit Profile</a></li>);
+
 		return React.createElement(
-			"div",
+			"section",
 			null,
-			"im a profile component"
+			React.createElement(
+				"em",
+				null,
+				React.createElement(
+					"a",
+					{ href: "#profile/1" },
+					"Pair Pr💕gramming"
+				)
+			),
+			React.createElement(
+				"ul",
+				null,
+				links
+			)
 		);
 	}
 });
@@ -31756,12 +31815,62 @@ module.exports = React.createClass({
 		return React.createElement(
 			"div",
 			null,
-			"im a register component"
+			"im a profile component"
 		);
 	}
 });
 
 },{"react":161}],165:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
+
+module.exports = React.createClass({
+	displayName: "exports",
+
+	render: function render() {
+		return React.createElement(
+			"form",
+			{ onSubmit: this.registerUser },
+			React.createElement(
+				"h1",
+				null,
+				"Sign Up"
+			),
+			React.createElement("input", { type: "text", ref: "username", placeholder: "Handle" }),
+			React.createElement("input", { type: "text", ref: "email", placeholder: "Email" }),
+			React.createElement("input", { type: "password", ref: "password", placeholder: "Password" }),
+			React.createElement("input", { type: "password", ref: "repeatPassword", placeholder: "Repeat Password" }),
+			React.createElement(
+				"button",
+				null,
+				"REGISTER"
+			)
+		);
+	},
+	registerUser: function registerUser(e) {
+		e.preventDefault();
+	}
+});
+
+},{"react":161}],166:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
+
+module.exports = React.createClass({
+	displayName: "exports",
+
+	render: function render() {
+		return React.createElement(
+			"h1",
+			null,
+			"Find the partner you've been looking for! 💞"
+		);
+	}
+});
+
+},{"react":161}],167:[function(require,module,exports){
 'use strict';
 var React = require("react");
 var ReactDOM = require("react-dom");
@@ -31770,7 +31879,11 @@ var keys = require("../config/config_parse.js");
 var Login = require("./components/Login");
 var Register = require("./components/Register");
 var Profile = require("./components/Profile");
+var NavBar = require("./components/NavBar");
+var Tagline = require("./components/Tagline");
 var containerEl = document.getElementById("container");
+var navEl = document.getElementById("nav");
+var headerEl = document.getElementById("tagline");
 Parse.initialize(keys.appKey, keys.jsKey);
 
 var App = Backbone.Router.extend({
@@ -31790,11 +31903,14 @@ var App = Backbone.Router.extend({
 		ReactDOM.render(React.createElement(Profile, { router: this }), containerEl);
 	}
 });
-
 var app = new App();
 Backbone.history.start();
 
-},{"../config/config_parse.js":1,"./components/Login":162,"./components/Profile":163,"./components/Register":164,"backbone":2,"react":161,"react-dom":6}]},{},[165])
+ReactDOM.render(React.createElement(Tagline, null), headerEl);
+
+ReactDOM.render(React.createElement(NavBar, { router: app, history: Backbone.history }), navEl);
+
+},{"../config/config_parse.js":1,"./components/Login":162,"./components/NavBar":163,"./components/Profile":164,"./components/Register":165,"./components/Tagline":166,"backbone":2,"react":161,"react-dom":6}]},{},[167])
 
 
 //# sourceMappingURL=bundle.js.map

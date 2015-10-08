@@ -6,7 +6,11 @@ var keys = require("../config/config_parse.js");
 var Login = require("./components/Login");
 var Register = require("./components/Register");
 var Profile = require("./components/Profile");
+var NavBar = require("./components/NavBar");
+var Tagline = require("./components/Tagline");
 var containerEl = document.getElementById("container");
+var navEl = document.getElementById("nav");
+var headerEl = document.getElementById("tagline");
 Parse.initialize(keys.appKey, keys.jsKey);
 
 var App = Backbone.Router.extend({
@@ -26,6 +30,9 @@ var App = Backbone.Router.extend({
 		ReactDOM.render(<Profile router={this} />,containerEl);
 	}
 });
-
 var app = new App();
 Backbone.history.start();
+
+ReactDOM.render(<Tagline />, headerEl);
+
+ReactDOM.render(<NavBar router={app} history={Backbone.history}/>, navEl);
