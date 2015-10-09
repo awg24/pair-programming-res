@@ -96,7 +96,9 @@ main {
 		input:focus {
 			outline: none;
 			border-bottom: 2px solid #40c4ff;
+			font-size: 15px;
 			transition: border-bottom 0.2s;
+			transition: font-size 0.2s;
 		}
 		button {
 			padding: 20px;
