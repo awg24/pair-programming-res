@@ -31728,17 +31728,39 @@ module.exports = React.createClass({
 				"Login"
 			),
 			React.createElement("input", { type: "text", ref: "username", placeholder: "Username or Email" }),
-			React.createElement("input", { type: "text", ref: "email", placeholder: "Email" }),
 			React.createElement("input", { type: "password", ref: "password", placeholder: "Password" }),
 			React.createElement(
 				"button",
 				null,
 				"LOGIN"
+			),
+			React.createElement("br", null),
+			React.createElement(
+				"label",
+				null,
+				"Haven't sign up? ",
+				React.createElement(
+					"a",
+					{ href: "#register" },
+					"Register Here!"
+				)
+			),
+			React.createElement(
+				"h5",
+				null,
+				"Find the partner you've been looking for! 💞"
 			)
 		);
 	},
 	loginUser: function loginUser(e) {
+		var _this = this;
+
 		e.preventDefault();
+		Parse.User.logIn(this.refs.username.value, this.refs.password.value).then(function (user) {
+			_this.props.router.navigate("profile/" + _this.refs.username.value, { trigger: true });
+		}, function (error) {
+			console.log(error);
+		});
 	}
 });
 
@@ -31750,10 +31772,54 @@ var React = require("react");
 module.exports = React.createClass({
 	displayName: "exports",
 
+	render: function render() {
+		return React.createElement(
+			"figure",
+			null,
+			React.createElement("img", { src: "../../images/blank_profile_pic.jpg" }),
+			React.createElement(
+				"figcaption",
+				null,
+				" match "
+			)
+		);
+	}
+});
+
+},{"react":161}],164:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
+var Match = require("./Match");
+
+module.exports = React.createClass({
+	displayName: "exports",
+
+	render: function render() {
+		return React.createElement(
+			"section",
+			{ className: "pos-abs" },
+			React.createElement(Match, null),
+			React.createElement(Match, null),
+			React.createElement(Match, null),
+			React.createElement(Match, null)
+		);
+	}
+});
+
+},{"./Match":163,"react":161}],165:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
+
+module.exports = React.createClass({
+	displayName: "exports",
+
 	componentWillMount: function componentWillMount() {
-		var that = this;
+		var _this = this;
+
 		this.props.router.on("route", function () {
-			that.forceUpdate();
+			_this.forceUpdate();
 		});
 	},
 	render: function render() {
@@ -31779,11 +31845,38 @@ module.exports = React.createClass({
 				)
 			));
 		}
-		// links.push(<li key="login-link"><a href="#profile/1">Profile</a></li>);
-		// links.push(<li key="login-link"><a href="#editprofile">Edit Profile</a></li>);
-
+		if (this.props.history.getFragment().indexOf("profile") !== -1) {
+			links = [];
+			links.push(React.createElement(
+				"li",
+				{ key: "edit-link" },
+				React.createElement(
+					"a",
+					{ href: "#editprofile" },
+					"Edit Profile"
+				)
+			));
+			links.push(React.createElement(
+				"li",
+				{ key: "search-link" },
+				React.createElement(
+					"a",
+					{ href: "#profile/1" },
+					"Search"
+				)
+			));
+			links.push(React.createElement(
+				"li",
+				{ key: "logout-link" },
+				React.createElement(
+					"a",
+					{ onClick: this.logoutUser, href: "#" },
+					"Logout"
+				)
+			));
+		}
 		return React.createElement(
-			"section",
+			"nav",
 			null,
 			React.createElement(
 				"em",
@@ -31800,10 +31893,37 @@ module.exports = React.createClass({
 				links
 			)
 		);
+	},
+	logoutUser: function logoutUser() {
+		Parse.User.logOut().then(function () {
+			console.log("user was logged out");
+		});
 	}
 });
 
-},{"react":161}],164:[function(require,module,exports){
+},{"react":161}],166:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
+var ProfilePic = require("./ProfilePicture");
+var MatchBox = require("./MatchBox");
+var Questionaire = require("./Questionaire");
+
+module.exports = React.createClass({
+	displayName: "exports",
+
+	render: function render() {
+		return React.createElement(
+			"section",
+			null,
+			React.createElement(ProfilePic, null),
+			React.createElement(MatchBox, null),
+			React.createElement(Questionaire, null)
+		);
+	}
+});
+
+},{"./MatchBox":164,"./ProfilePicture":167,"./Questionaire":168,"react":161}],167:[function(require,module,exports){
 "use strict";
 
 var React = require("react");
@@ -31813,14 +31933,91 @@ module.exports = React.createClass({
 
 	render: function render() {
 		return React.createElement(
-			"div",
-			null,
-			"im a profile component"
+			"figure",
+			{ className: "figure" },
+			React.createElement("img", { src: "../../images/blank_profile_pic.jpg" }),
+			React.createElement(
+				"figcaption",
+				null,
+				"name goes here"
+			),
+			React.createElement(
+				"figcaption",
+				null,
+				"city goes here"
+			)
 		);
 	}
 });
 
-},{"react":161}],165:[function(require,module,exports){
+},{"react":161}],168:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
+var Match = require("./Match");
+var questionaire = require("../data/QuestionAnswers");
+
+module.exports = React.createClass({
+	displayName: "exports",
+
+	render: function render() {
+		var things = questionaire.map(function (question, index) {
+			var key = Object.keys(question);
+			return React.createElement(
+				"div",
+				{ key: "question-" + index },
+				React.createElement(
+					"div",
+					null,
+					key[0]
+				),
+				React.createElement(
+					"section",
+					null,
+					React.createElement("input", { type: "radio", value: 1, name: "quesitongroup" + index }),
+					" ",
+					question[key[0]][0],
+					React.createElement("input", { type: "radio", value: 2, name: "quesitongroup" + index }),
+					" ",
+					question[key[0]][1],
+					React.createElement("input", { type: "radio", value: 3, name: "quesitongroup" + index }),
+					" ",
+					question[key[0]][2]
+				)
+			);
+		});
+
+		return React.createElement(
+			"section",
+			{ className: "diff", ref: "answers" },
+			things,
+			React.createElement(
+				"button",
+				{ onClick: this.submitQuestions },
+				"SUBMIT"
+			)
+		);
+	},
+	submitQuestions: function submitQuestions() {
+		var inputs = this.refs.answers.querySelectorAll("input[type='radio']");
+		var inputArray = [].slice.call(inputs);
+		var selected = inputArray.filter(function (input) {
+			return input.checked;
+		}).reduce(function (pValue, cValue) {
+			pValue[cValue.name] = parseInt(cValue.value);
+			return pValue;
+		}, {});
+		var user = Parse.User.current();
+		user.set("questionare", selected);
+		user.save().then(function (user) {
+			console.log("save");
+		}, function (error) {
+			console.log(error);
+		});
+	}
+});
+
+},{"../data/QuestionAnswers":171,"./Match":163,"react":161}],169:[function(require,module,exports){
 "use strict";
 
 var React = require("react");
@@ -31845,15 +32042,45 @@ module.exports = React.createClass({
 				"button",
 				null,
 				"REGISTER"
+			),
+			React.createElement("br", null),
+			React.createElement(
+				"label",
+				null,
+				"Already signed up? ",
+				React.createElement(
+					"a",
+					{ href: "#login" },
+					"Login Here!"
+				)
+			),
+			React.createElement(
+				"h5",
+				null,
+				"Find the partner you've been looking for! 💞"
 			)
 		);
 	},
 	registerUser: function registerUser(e) {
+		var _this = this;
+
 		e.preventDefault();
+		var that = this;
+		var user = new Parse.User();
+		user.set("username", this.refs.username.value);
+		user.set("password", this.refs.password.value);
+		user.set("email", this.refs.email.value);
+
+		user.signUp(null).then(function (user) {
+			console.log(user);
+			_this.props.router.navigate("profile/1", { trigger: true });
+		}, function (error) {
+			console.log(error);
+		});
 	}
 });
 
-},{"react":161}],166:[function(require,module,exports){
+},{"react":161}],170:[function(require,module,exports){
 "use strict";
 
 var React = require("react");
@@ -31865,12 +32092,17 @@ module.exports = React.createClass({
 		return React.createElement(
 			"h1",
 			null,
-			"Find the partner you've been looking for! 💞"
+			"Pair Pr💗gramming"
 		);
 	}
 });
 
-},{"react":161}],167:[function(require,module,exports){
+},{"react":161}],171:[function(require,module,exports){
+"use strict";
+
+module.exports = [{ "1.) Which OS do you prefer?": ["OS X", "Windows", "Linux"] }, { "2.) I love TDD. Agree or disagree?": ["Agree", "Neutral", "Disagree"] }, { "3.) What is your preferred text editor color scheme?": ["Dark", "Neutral", "Light"] }, { "4.) Do you prefer the front-end or back-end?": ["Workin' in the Front", "Both", "Workin' in the Back"] }, { "5.) Do you know Fortran?": ["Yes", "No", "Eh?"] }, { "6.) They say that when person uses Regular Expressions to solve a problem, \nthey end up with two problems. Agree or disagree?": ["Agree", "Neutral", "Disagree"] }, { "7.) Mouse, trackpad, or VIM?": ["Mouse", "Trackpad", "VIM"] }, { "8.) Bracket['notation'] or literal.notation?": ["Brackets!", "Literal!", "Objects?"] }, { "9.) Spaces or tabs?": ["Spaces", "Tabs", "I like to watch the world burn.. both"] }, { "10.) Which is your preferred browser?": ["Firefox", "Chrome", "IE8"] }, { "11.) Startup, enterprise, or freelance?": ["StartUps are my jam!", "Give me a suit and tie!", "I like working from home!"] }];
+
+},{}],172:[function(require,module,exports){
 'use strict';
 var React = require("react");
 var ReactDOM = require("react-dom");
@@ -31894,23 +32126,25 @@ var App = Backbone.Router.extend({
 		"profile/:id": "profile"
 	},
 	login: function login() {
+		ReactDOM.render(React.createElement(Tagline, null), headerEl);
+		ReactDOM.render(React.createElement(NavBar, { router: app, history: Backbone.history }), navEl);
 		ReactDOM.render(React.createElement(Login, { router: this }), containerEl);
 	},
 	register: function register() {
+		ReactDOM.render(React.createElement(Tagline, null), headerEl);
+		ReactDOM.render(React.createElement(NavBar, { router: app, history: Backbone.history }), navEl);
 		ReactDOM.render(React.createElement(Register, { router: this }), containerEl);
 	},
 	profile: function profile(id) {
+		ReactDOM.render(React.createElement("div", null), headerEl);
+		ReactDOM.render(React.createElement(NavBar, { router: app, history: Backbone.history }), navEl);
 		ReactDOM.render(React.createElement(Profile, { router: this }), containerEl);
 	}
 });
 var app = new App();
 Backbone.history.start();
 
-ReactDOM.render(React.createElement(Tagline, null), headerEl);
-
-ReactDOM.render(React.createElement(NavBar, { router: app, history: Backbone.history }), navEl);
-
-},{"../config/config_parse.js":1,"./components/Login":162,"./components/NavBar":163,"./components/Profile":164,"./components/Register":165,"./components/Tagline":166,"backbone":2,"react":161,"react-dom":6}]},{},[167])
+},{"../config/config_parse.js":1,"./components/Login":162,"./components/NavBar":165,"./components/Profile":166,"./components/Register":169,"./components/Tagline":170,"backbone":2,"react":161,"react-dom":6}]},{},[172])
 
 
 //# sourceMappingURL=bundle.js.map

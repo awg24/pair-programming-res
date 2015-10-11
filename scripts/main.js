@@ -21,18 +21,20 @@ var App = Backbone.Router.extend({
 		"profile/:id":"profile"
 	},
 	login: function(){
+		ReactDOM.render(<Tagline />, headerEl);
+		ReactDOM.render(<NavBar router={app} history={Backbone.history}/>, navEl);
 		ReactDOM.render(<Login router={this} />,containerEl);
 	},
 	register: function(){
+		ReactDOM.render(<Tagline />, headerEl);
+		ReactDOM.render(<NavBar router={app} history={Backbone.history}/>, navEl);
 		ReactDOM.render(<Register router={this} />,containerEl);
 	},
 	profile: function(id){
+		ReactDOM.render(<div></div>, headerEl);
+		ReactDOM.render(<NavBar router={app} history={Backbone.history}/>, navEl);
 		ReactDOM.render(<Profile router={this} />,containerEl);
 	}
 });
 var app = new App();
 Backbone.history.start();
-
-ReactDOM.render(<Tagline />, headerEl);
-
-ReactDOM.render(<NavBar router={app} history={Backbone.history}/>, navEl);

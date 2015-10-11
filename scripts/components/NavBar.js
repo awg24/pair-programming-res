@@ -2,9 +2,8 @@ var React = require("react");
 
 module.exports = React.createClass({
 	componentWillMount: function(){
-		var that = this;
-		this.props.router.on("route", function(){
-			that.forceUpdate();
+		this.props.router.on("route", () => {
+			this.forceUpdate();
 		});
 	},
 	render: function(){
@@ -14,16 +13,22 @@ module.exports = React.createClass({
 		} else {
 			links.push(<li key="register-link"><a href="#register">Register</a></li>);
 		}
-		// links.push(<li key="login-link"><a href="#profile/1">Profile</a></li>);
-		// links.push(<li key="login-link"><a href="#editprofile">Edit Profile</a></li>);
-		
+		if(this.props.history.getFragment().indexOf("profile") !== -1){
+			links = [];
+			links.push(<li key="edit-link"><a href="#editprofile">Edit Profile</a></li>);
+			links.push(<li key="search-link"><a href="#profile/1">Search</a></li>);
+			links.push(<li key="logout-link"><a onClick={this.logoutUser} href="#">Logout</a></li>);
+		}
 		return (
-			<section>
+			<nav>
 				<em><a href="#profile/1">Pair Pr💕gramming</a></em>
 				<ul>
 					{links}
 				</ul>
-			</section>
+			</nav>
 		);
+	},
+	logoutUser: function(){
+		Parse.User.logOut().then(()=>{console.log("user was logged out")});
 	}
 });
